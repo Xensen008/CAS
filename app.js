@@ -13,7 +13,10 @@ const app = express();
 app.use(express.json());
 
 const authRoutes = require('./Routes/auth.routes');
+const availabilityRoutes = require('./Routes/availability.routes');
+
 app.use('/api/auth', authRoutes);
+app.use('/api', availabilityRoutes);
 
 const port = process.env.PORT || 8080
 
