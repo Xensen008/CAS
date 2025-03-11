@@ -328,3 +328,8 @@ POST /api/appointments/book
 PUT /api/appointments/:id/cancel
 GET /api/appointments/mine
 ```
+
+
+```bash 
+newman run college-app.postman_collection.json -e college-env.postman_environment.json
+```
