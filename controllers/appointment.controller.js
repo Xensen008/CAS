@@ -123,6 +123,54 @@ const appointmentController = {
             console.error('Error in getAppointmentById:', error); // Debug log
             res.status(500).json({ message: error.message });
         }
+    },
+
+    cancelAppointment: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return res.status(400).json({ message: 'Invalid appointment ID format' });
+            }
+
+            const appointment = await Appointment.findById(id)
+                .populate('studentId', 'name email')
+                .populate('professorId', 'name email');
+
+            if (!appointment) {
+                return res.status(404).json({ message: 'Appointment not found' });
+            }
+
+            // Check if professor owns this appointment
+            if (appointment.professorId._id.toString() !== req.user._id.toString()) {
+                return res.status(403).json({ message: 'Not authorized to cancel this appointment' });
+            }
+
+            // Check if already cancelled
+            if (appointment.status === 'cancelled') {
+                return res.status(400).json({ message: 'Appointment is already cancelled' });
+            }
+
+            // Update appointment status
+            appointment.status = 'cancelled';
+            await appointment.save();
+
+            // Return time slot to availability
+            await Availability.updateOne(
+                { 
+                    professorId: req.user._id,
+                    date: appointment.date
+                },
+                { 
+                    $addToSet: { slots: appointment.timeSlot }
+                }
+            );
+
+            res.json(appointment);
+        } catch (error) {
+            console.error('Error in cancelAppointment:', error);
+            res.status(500).json({ message: error.message });
+        }
     }
 };
 

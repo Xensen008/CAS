@@ -7,5 +7,6 @@ router.post('/book', protect, authorize('student'), appointmentController.bookAp
 router.get('/mine', protect, appointmentController.getMyAppointments);
 router.get('/professor', protect, authorize('professor'), appointmentController.getProfessorAppointments);
 router.get('/:id', protect, appointmentController.getAppointmentById);
+router.put('/:id/cancel', protect, authorize('professor'), appointmentController.cancelAppointment);
 
 module.exports = router;

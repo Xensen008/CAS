@@ -183,6 +183,34 @@ Authorization: Bearer <your_token>
 
 Response: Same format as Get My Appointments
 
+#### Cancel Appointment (Professor Only)
+```http
+PUT /api/appointments/:id/cancel
+Authorization: Bearer <professor_token>
+```
+
+Response:
+```json
+{
+    "_id": "65f96e8b2d66a123456789",
+    "studentId": {
+        "_id": "65f96e8b2d66a987654322",
+        "name": "John Student",
+        "email": "student@example.com"
+    },
+    "professorId": {
+        "_id": "65f96e8b2d66a987654321",
+        "name": "Dr. Smith",
+        "email": "smith@example.com"
+    },
+    "date": "2024-03-20T00:00:00.000Z",
+    "timeSlot": "10:00",
+    "status": "cancelled",
+    "createdAt": "2024-03-19T10:30:00.000Z",
+    "updatedAt": "2024-03-19T10:30:00.000Z"
+}
+```
+
 ## Authentication
 
 - All protected routes require a JWT token in the Authorization header
