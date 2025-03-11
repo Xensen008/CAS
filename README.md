@@ -118,6 +118,71 @@ Response:
 ]
 ```
 
+### Appointments
+
+#### Book Appointment (Student Only)
+```http
+POST /api/appointments/book
+Authorization: Bearer <your_token>
+Content-Type: application/json
+
+{
+    "professorId": "65f96e8b2d66a987654321",
+    "date": "2024-03-20",
+    "timeSlot": "10:00"
+}
+```
+
+Response:
+```json
+{
+    "_id": "65f96e8b2d66a123456789",
+    "studentId": "65f96e8b2d66a987654322",
+    "professorId": "65f96e8b2d66a987654321",
+    "date": "2024-03-20T00:00:00.000Z",
+    "timeSlot": "10:00",
+    "status": "booked",
+    "createdAt": "2024-03-19T10:30:00.000Z",
+    "updatedAt": "2024-03-19T10:30:00.000Z"
+}
+```
+
+#### Get My Appointments (Both Student and Professor)
+```http
+GET /api/appointments/mine
+Authorization: Bearer <your_token>
+```
+
+Response:
+```json
+[
+    {
+        "_id": "65f96e8b2d66a123456789",
+        "studentId": {
+            "_id": "65f96e8b2d66a987654322",
+            "name": "John Student",
+            "email": "student@example.com"
+        },
+        "professorId": {
+            "_id": "65f96e8b2d66a987654321",
+            "name": "Dr. Smith",
+            "email": "smith@example.com"
+        },
+        "date": "2024-03-20T00:00:00.000Z",
+        "timeSlot": "10:00",
+        "status": "booked"
+    }
+]
+```
+
+#### Get Professor Appointments (Professor Only)
+```http
+GET /api/appointments/professor
+Authorization: Bearer <your_token>
+```
+
+Response: Same format as Get My Appointments
+
 ## Authentication
 
 - All protected routes require a JWT token in the Authorization header
@@ -146,6 +211,14 @@ Response:
 - professorId (ObjectId, required)
 - date (Date, required)
 - slots (Array of Strings, time format: HH:mm)
+- timestamps (createdAt, updatedAt)
+
+### Appointment Model
+- studentId (ObjectId, required, ref: 'User')
+- professorId (ObjectId, required, ref: 'User')
+- date (Date, required)
+- timeSlot (String, required, format: HH:mm)
+- status (String, enum: ['booked', 'cancelled'])
 - timestamps (createdAt, updatedAt)
 
 ## Error Handling
