@@ -4,9 +4,6 @@ const connectDB = require("./config/db");
 
 dotenv.config();
 
-// Connect to database
-connectDB();
-
 const app = express();
 
 // Body parser
@@ -20,12 +17,18 @@ app.use('/api/auth', authRoutes);
 app.use('/api', availabilityRoutes);
 app.use('/api/appointments', appointmentRoutes);
 
-const port = process.env.PORT || 8080
-
 app.get('/',(req,res)=>{
     res.send("hello Arnab")
-})
+});
 
-app.listen(port,()=>{
-    console.log(`server running at ${port}`)
-})
+// Only start server if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+    const port = process.env.PORT || 8080;
+    connectDB().then(() => {
+        app.listen(port, () => {
+            console.log(`server running at ${port}`);
+        });
+    });
+}
+
+module.exports = app;

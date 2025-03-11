@@ -272,3 +272,59 @@ The API returns appropriate HTTP status codes:
 - Role-based access control
 - Input validation
 - MongoDB injection protection
+
+## Testing
+
+### Setup
+```bash
+npm install --save-dev jest supertest mongodb-memory-server cross-env
+```
+
+### Running Tests
+```bash
+# Run all tests
+npm test
+
+
+### Test Coverage
+The test suite includes:
+
+E2E Flow Tests
+   - Complete user journey from registration to appointment cancellation
+   - Validates all major functionalities
+
+### Test Environment
+- Uses MongoDB Memory Server for isolated testing
+- Runs on a separate port (8081)
+- Cleans up test data between runs
+- Handles async operations properly
+### Flow
+
+- Register and log in Student A1
+- Register and log in Professor P1
+- Professor sets availability
+- Student A1 views availability
+- Student A1 books appointment T1
+- Student A2 registers and books appointment T2
+- Professor P1 cancels Student A1’s appointment
+- Student A1 checks and sees no appointment.
+- Use token variables to simulate login headers in the test file, and use await for each API call. Add appropriate expect() statements to verify responses."
+
+
+### Example Test Flow
+```javascript
+// Register users
+POST /api/auth/register (Student A1)
+POST /api/auth/register (Professor P1)
+
+// Set availability
+POST /api/professor/availability
+
+// Book appointments
+GET /api/professor/:id/availability
+POST /api/appointments/book
+
+// Cancel and verify
+PUT /api/appointments/:id/cancel
+GET /api/appointments/mine
+```
